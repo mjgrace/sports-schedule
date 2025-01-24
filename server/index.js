@@ -2,6 +2,8 @@
 const express = require('express');
 const cors = require('cors'); // CORS middleware for cross-origin requests
 const morgan = require('morgan'); // HTTP request logger middleware
+const axios = require('axios');
+
 
 // Initialize the Express app
 const app = express();
@@ -28,6 +30,26 @@ app.post('/data', (req, res) => {
     message: 'Data received successfully!',
     data: receivedData
   });
+});
+
+// Route to handle API requests
+app.get('/sports_api_test', async (req, res) => {
+  var config = {
+    method: 'get',
+    url: process.env.API_SPORTS_URL + '/leagues',
+    headers: {
+      'x-rapidapi-host': process.env.API_SPORTS_HOST,
+      'x-rapidapi-key': process.env.API_SPORTS_API_KEY
+    }
+  };
+  
+  axios(config)
+  .then(function (response) {
+    res.send(JSON.stringify(response.data));
+  })
+  .catch(function (error) {
+    console.log(error);
+  });    
 });
 
 // Example of a route with a URL parameter (e.g., /user/:id)

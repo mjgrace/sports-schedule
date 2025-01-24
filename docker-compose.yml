@@ -31,7 +31,9 @@ services:
       - "5000:5000"
     env_file: ./.env
     environment:
-      # - NODE_ENV=development
+      - API_SPORTS_HOST=$API_SPORTS_HOST
+      - API_SPORTS_API_KEY=$API_SPORTS_API_KEY
+      - API_SPORTS_URL=$API_SPORTS_URL
       - DB_HOST=mongodb_server
       - DB_USER=$MONGODB_USER
       - DB_PASSWORD=$MONGODB_PASSWORD
