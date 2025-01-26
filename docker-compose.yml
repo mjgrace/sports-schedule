@@ -46,17 +46,17 @@ services:
   mongodb:
     image: mongo:latest
     container_name: mongodb_server
-
     env_file: ./.env
     environment:
       - MONGO_INITDB_ROOT_USERNAME=$MONGODB_USER
       - MONGO_INITDB_ROOT_PASSWORD=$MONGODB_PASSWORD
-
+      - MONGO_INITDB_DATABASE=$MONGODB_DATABASE
     ports:
       - "27017:27017"
-
     volumes:
-      - mydata:/data/db
+      - mongodb_data:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    command: ["mongod", "--quiet"]
 
 volumes: 
-  mydata:
+  mongodb_data:

@@ -4,6 +4,8 @@ const cors = require('cors'); // CORS middleware for cross-origin requests
 const morgan = require('morgan'); // HTTP request logger middleware
 const axios = require('axios');
 
+const connectDB = require('./config/db');
+
 const LeagueRoot = require("./models/football/LeagueRoot");
 const League = require("./models/football/League");
 const Country = require("./models/football/Country");
@@ -20,6 +22,9 @@ module.exports = {
 
 // Initialize the Express app
 const app = express();
+
+// Connect to the DB
+connectDB();
 
 // Middleware for logging HTTP requests
 app.use(morgan('dev'));
