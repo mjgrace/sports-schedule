@@ -1,7 +1,7 @@
 // Fetch environment variables
 const dbName = process.env.MONGO_INITDB_DATABASE || 'default_database';
-const dbUser = process.env.MONGO_INITDB_USERNAME || 'default_user';
-const dbPassword = process.env.MONGO_INITDB_PASSWORD || 'default_password';
+const dbUser = process.env.MONGO_INITDB_ROOT_USERNAME || 'default_user';
+const dbPassword = process.env.MONGO_INITDB_ROOT_PASSWORD || 'default_password';
 
 db.createUser({
     user: dbUser,
