@@ -18,13 +18,10 @@ module.exports = {
   Country,
   Season,
   Coverage,
-};
+};    
 
 // Initialize the Express app
 const app = express();
-
-// Connect to the DB
-connectDB();
 
 // Middleware for logging HTTP requests
 app.use(morgan('dev'));
@@ -49,11 +46,10 @@ app.post('/data', (req, res) => {
     data: receivedData
   });
 });
+  // Define Sports API routes
+  const sportsApiRoutes = require('./sportsApi');
 
-// Define Sports API routes
-const sportsApiRoutes = require('./sportsApi');
-
-app.use('/sports_api', sportsApiRoutes);
+  app.use('/sports_api', sportsApiRoutes);
 
 // Example of a route with a URL parameter (e.g., /user/:id)
 app.get('/user/:id', (req, res) => {
@@ -75,7 +71,13 @@ app.use((err, req, res, next) => {
 // Set the port for the server
 const PORT = process.env.PORT || 5000;
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+// Start the server after the DB connection is established
+connectDB()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  }).catch((err) => {
+      console.error('Failed to connect to the database:', err);
+      process.exit(1); // Exit the process if the database connection fails
+  });
