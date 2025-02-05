@@ -11,6 +11,7 @@ const League = require("./models/football/League");
 const Country = require("./models/football/Country");
 const Season = require("./models/football/Season");
 const Coverage = require("./models/football/Coverage");
+const Timezone = require("./models/football/Timezone");
 
 module.exports = {
   LeagueRoot,
@@ -18,6 +19,7 @@ module.exports = {
   Country,
   Season,
   Coverage,
+  Timezone,
 };    
 
 // Initialize the Express app
@@ -46,10 +48,11 @@ app.post('/data', (req, res) => {
     data: receivedData
   });
 });
-  // Define Sports API routes
-  const sportsApiRoutes = require('./sportsApi');
 
-  app.use('/sports_api', sportsApiRoutes);
+// Define Sports API routes
+const sportsApiRoutes = require('./sportsApi');
+
+app.use('/sports_api', sportsApiRoutes);
 
 // Example of a route with a URL parameter (e.g., /user/:id)
 app.get('/user/:id', (req, res) => {
@@ -72,7 +75,7 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000;
 
 // Start the server after the DB connection is established
-connectDB()
+const db = connectDB()
   .then(() => {
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
