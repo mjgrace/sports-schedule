@@ -118,7 +118,7 @@ const getLeagues = async (req, res) => {
         'x-rapidapi-key': process.env.API_SPORTS_API_KEY
       },
       cache: {
-        ttl: 1000 * 60 * 60 * 24, // Update once per day
+        ttl: 1000 * 60 * 60, // Update once per hour
       },
 
     });
