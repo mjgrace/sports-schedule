@@ -7,7 +7,7 @@ const SeasonSchema = new mongoose.Schema({
   end: { type: String },
   current: { type: Boolean },
   coverage: { type: mongoose.Schema.Types.ObjectId, ref: "Coverage" },
-});
+}, { timestamps: true });
 
 const Season = mongoose.model("Season", SeasonSchema);
 

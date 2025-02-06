@@ -5,7 +5,7 @@ const LeagueSchema = new mongoose.Schema({
   name: { type: String },
   type: { type: String },
   logo: { type: String },
-});
+}, { timestamps: true });
 
 const League = mongoose.model("League", LeagueSchema);
 

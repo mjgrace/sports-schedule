@@ -15,7 +15,7 @@ const CoverageSchema = new mongoose.Schema({
   injuries: { type: Boolean },
   predictions: { type: Boolean },
   odds: { type: Boolean },
-});
+}, { timestamps: true });
 
 const Coverage = mongoose.model("Coverage", CoverageSchema);
 

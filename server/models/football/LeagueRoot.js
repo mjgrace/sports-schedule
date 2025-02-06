@@ -19,7 +19,7 @@ const LeagueRootSchema = new mongoose.Schema({
       seasons: [{ type: mongoose.Schema.Types.ObjectId, ref: "Season" }],
     },
   ],
-});
+}, { timestamps: true });
 
 const LeagueRoot = mongoose.model("LeagueRoot", LeagueRootSchema);
 
