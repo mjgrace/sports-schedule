@@ -35,8 +35,10 @@ router.get('/leagues', async (req, res) => {
 router.get('/test', async (req, res) => {    
   result = '';
   try {
-    timezone = await getTimezone(req, res);
-    result += "Timezone: " + timezone;
+    timezones = await getTimezones(req, res);
+    result += "Timezones: " + timezones;
+    countries = await getCountries(req, res);
+    result += "Countries: " + countries;
     leagues = await getLeagues(req, res);
     result += "\nLeagues: " + leagues;
     res.send(result);  
@@ -46,7 +48,7 @@ router.get('/test', async (req, res) => {
   }
 });
 
-const getTimezone = async (req, res) => {
+const getTimezones = async (req, res) => {
   try {
     const response = await axiosInstance.get(process.env.API_SPORTS_URL + '/timezone', {
       headers: {
@@ -75,7 +77,37 @@ const saveTimezonePayload = async (payload) => {
         console.error('Error saving timezones:', err)
       );
   return timezones;
-  // return("Error fetching data");
+}
+
+const getCountries = async (req, res) => {
+  try {
+    const response = await axiosInstance.get(process.env.API_SPORTS_URL + '/countries', {
+      headers: {
+        'x-rapidapi-host': process.env.API_SPORTS_HOST,
+        'x-rapidapi-key': process.env.API_SPORTS_API_KEY
+      },
+      cache: {
+        ttl: 1000 * 60 * 60 * 24, // Update once per day
+      },
+    });
+    countries = saveCountryPayload(response.data);
+    return(JSON.stringify(response.data));
+  } catch (error) {
+    console.log(error);
+    return("Error fetching data");
+  }
+}
+
+const saveCountryPayload = async (payload) => {
+  // Save the country data
+  const countries = payload.response.map(country => ({ name: country.name, code: country.code, flag: country.flag }));
+  await Country.insertMany(countries, { ordered: false })
+      .then(() => 
+        console.log('Countries saved successfully'))
+      .catch(err => 
+        console.error('Error saving countries:', err)
+      );
+  return countries;
 }
 
 const getLeagues = async (req, res) => {
