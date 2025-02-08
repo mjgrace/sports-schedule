@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const VenueSchema = require('./Venue');
+const Venue = require('./Venue');
 
 const TeamSchema = new mongoose.Schema({
     id: { type: Number },
@@ -9,7 +9,7 @@ const TeamSchema = new mongoose.Schema({
     founded: { type: Number },
     national: { type: Boolean },
     logo: { type: String },
-    venue: { type: VenueSchema } // Embedded venue schema
+    coverage: { type: mongoose.Schema.Types.ObjectId, ref: "Venue" },
 }, { timestamps: true });
 
 const Team = mongoose.model("Team", TeamSchema);

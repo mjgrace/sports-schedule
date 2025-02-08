@@ -45,6 +45,8 @@ router.get('/test', async (req, res) => {
     result += "Countries: " + countries;
     leagues = await getLeagues(req, res);
     result += "\nLeagues: " + leagues;
+    team = await getTeam(req, res);
+    result += "\nTeam: " + team;
     res.send(result);  
   } catch (error) {
     console.log(error);
@@ -178,6 +180,61 @@ const saveLeagueRootPayload = async (payload) => {
     await leagueRoot.save();
 
     console.log("Payload saved successfully!");
+  } catch (error) {
+    console.error("Error saving payload:", error);
+  }
+};
+
+const getTeam = async (req, res) => {
+  try {
+      const teamId = req.query.teamId;
+      const teamUrl = process.env.API_SPORTS_URL + "/teams" + (teamId ? ("?id=" + encodeURIComponent(teamId)) : '')
+      console.log("teamUrl: " + teamUrl);
+
+      const response = await axiosInstance.get(teamUrl, {
+      headers: {
+        'x-rapidapi-host': process.env.API_SPORTS_HOST,
+        'x-rapidapi-key': process.env.API_SPORTS_API_KEY
+      },
+      cache: {
+        ttl: 1000 * 60 * 60 * 24, // Update once per day
+      },
+
+    });
+    saveTeamPayload(response.data);
+    return(JSON.stringify(response.data));
+  } catch (error) {
+    console.log(error);
+    return("Error fetching data");
+  }
+}
+
+const saveTeamPayload = async (payload) => {
+  try {
+    console.log("Team Payload:" + JSON.stringify(payload));
+    const team = new Team({
+      id: payload.response[0].team.id,
+      name: payload.response[0].team.name, 
+      code: payload.response[0].team.code,
+      country: payload.response[0].team.country,
+      founded: payload.response[0].team.founded,
+      national: payload.response[0].team.national,
+      logo: payload.response[0].team.logo    
+    });
+    const venue = new Venue({
+      id: payload.response[0].venue.id,
+      name: payload.response[0].venue.name,
+      address: payload.response[0].venue.address,
+      city: payload.response[0].venue.city,
+      capacity: payload.response[0].venue.capacity,
+      surface: payload.response[0].venue.surface,
+      image: payload.response[0].venue.image
+    });
+    await Team.insertMany(team, { ordered: false });
+    console.log('Teams saved successfully!');
+    await Venue.insertMany(venue, { ordered: false });
+    console.log('Venues saved successfully!');
+    return(JSON.stringify(response.data));
   } catch (error) {
     console.error("Error saving payload:", error);
   }
