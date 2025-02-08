@@ -41,8 +41,8 @@ router.get('/test', async (req, res) => {
   try {
     timezones = await getTimezones(req, res);
     result += "Timezones: " + timezones;
-    // countries = await getCountries(req, res);
-    // result += "Countries: " + countries;
+    countries = await getCountries(req, res);
+    result += "Countries: " + countries;
     // leagues = await getLeagues(req, res);
     // result += "\nLeagues: " + leagues;
     // team = await getTeam(req, res);
@@ -114,12 +114,19 @@ const getCountries = async (req, res) => {
 const saveCountryPayload = async (payload) => {
   // Save the country data
   const countries = payload.response.map(country => ({ name: country.name, code: country.code, flag: country.flag }));
-  await Country.insertMany(countries, { ordered: false })
-      .then(() => 
-        console.log('Countries saved successfully'))
-      .catch(err => 
-        console.error('Error saving countries:', err)
-      );
+  const bulkOps = payload.response.map(country => ({
+    updateOne: {
+      filter: { name: country.name },
+      update: { $set: { name: country.name, code: country.code, flag: country.flag } },
+      upsert: true
+    }
+  }));
+  await Country.bulkWrite(bulkOps)
+    .then(() => 
+      console.log('Countries saved successfully'))
+    .catch(err => 
+      console.error('Error saving countries:', err)
+    );
   return countries;
 }
 
