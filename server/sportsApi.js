@@ -41,12 +41,12 @@ router.get('/test', async (req, res) => {
   try {
     timezones = await getTimezones(req, res);
     result += "Timezones: " + timezones;
-    countries = await getCountries(req, res);
-    result += "Countries: " + countries;
-    leagues = await getLeagues(req, res);
-    result += "\nLeagues: " + leagues;
-    team = await getTeam(req, res);
-    result += "\nTeam: " + team;
+    // countries = await getCountries(req, res);
+    // result += "Countries: " + countries;
+    // leagues = await getLeagues(req, res);
+    // result += "\nLeagues: " + leagues;
+    // team = await getTeam(req, res);
+    // result += "\nTeam: " + team;
     res.send(result);  
   } catch (error) {
     console.log(error);
@@ -76,12 +76,19 @@ const getTimezones = async (req, res) => {
 const saveTimezonePayload = async (payload) => {
   // Save the timezone data
   const timezones = payload.response.map(zone => ({ timezone: zone }));
-  await Timezone.insertMany(timezones, { ordered: false })
-      .then(() => 
-        console.log('Timezones saved successfully'))
-      .catch(err => 
-        console.error('Error saving timezones:', err)
-      );
+  const bulkOps = payload.response.map(zone => ({
+    updateOne: {
+      filter: { timezone: zone },
+      update: { $set: { timezone: zone } },
+      upsert: true
+    }
+  }));
+  await Timezone.bulkWrite(bulkOps)
+    .then(() => 
+      console.log('Timezones saved successfully'))
+    .catch(err => 
+      console.error('Error saving timezones:', err)
+    );
   return timezones;
 }
 
