@@ -9,7 +9,7 @@ const TeamSchema = new mongoose.Schema({
     founded: { type: Number },
     national: { type: Boolean },
     logo: { type: String },
-    coverage: { type: mongoose.Schema.Types.ObjectId, ref: "Venue" },
+    venue: { type: mongoose.Schema.Types.ObjectId, ref: "Venue" },
 }, { timestamps: true });
 
 const Team = mongoose.model("Team", TeamSchema);

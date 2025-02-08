@@ -2,7 +2,6 @@ const LeagueRoot = require("./models/football/LeagueRoot");
 const League = require("./models/football/League");
 const Country = require("./models/football/Country");
 const Season = require("./models/football/Season");
-const Coverage = require("./models/football/Coverage");
 const Timezone = require("./models/football/Timezone");
 const Venue = require("./models/football/Venue");
 const Team = require("./models/football/Team");
@@ -12,7 +11,6 @@ module.exports = {
   League,
   Country,
   Season,
-  Coverage,
   Timezone,
   Venue,
   Team
@@ -152,31 +150,26 @@ const getLeagues = async (req, res) => {
 
 const saveLeagueRootPayload = async (payload) => {
   try {
-    // Step 1: Save the coverage data
-    const coverage = new Coverage(payload.response[0].seasons[0].coverage);
-    await coverage.save();
-
-    // Step 2: Save the season data with coverage reference
+    // Step 1: Save the season data
     const seasons = await Promise.all(
       payload.response[0].seasons.map(async (seasonData) => {
         const season = new Season({
           ...seasonData,
-          coverage: coverage._id,
         });
         await season.save();
         return season._id;
       })
     );
 
-    // Step 3: Save the country data
+    // Step 2: Save the country data
     const country = new Country(payload.response[0].country);
     await country.save();
 
-    // Step 4: Save the league data
+    // Step 3: Save the league data
     const league = new League(payload.response[0].league);
     await league.save();
 
-    // Step 5: Save the root object (LeagueRoot)
+    // Step 4: Save the root object (LeagueRoot)
     const leagueRoot = new LeagueRoot({
       get: payload.get,
       parameters: payload.parameters,

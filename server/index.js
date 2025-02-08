@@ -10,7 +10,6 @@ const LeagueRoot = require("./models/football/LeagueRoot");
 const League = require("./models/football/League");
 const Country = require("./models/football/Country");
 const Season = require("./models/football/Season");
-const Coverage = require("./models/football/Coverage");
 const Timezone = require("./models/football/Timezone");
 const Venue = require("./models/football/Venue");
 const Team = require("./models/football/Team");
@@ -20,7 +19,6 @@ module.exports = {
   League,
   Country,
   Season,
-  Coverage,
   Timezone,
   Venue,
   Team
