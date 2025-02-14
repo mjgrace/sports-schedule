@@ -63,7 +63,7 @@ const getTimezones = async (req, res) => {
         update: false, // Don't update cache if expired
       },
     });
-    timezones = saveTimezonePayload(response.data);
+    timezones = saveTimezonePayload(response.data.response);
     return(JSON.stringify(response.data));
   } catch (error) {
     console.log(error);
@@ -71,10 +71,10 @@ const getTimezones = async (req, res) => {
   }
 }
 
-const saveTimezonePayload = async (payload) => {
+const saveTimezonePayload = async (timezoneData) => {
   // Save the timezone data
-  const timezones = payload.response.map(zone => ({ timezone: zone }));
-  const bulkOps = payload.response.map(zone => ({
+  const timezones = timezoneData.map(zone => ({ timezone: zone }));
+  const bulkOps = timezoneData.map(zone => ({
     updateOne: {
       filter: { timezone: zone },
       update: { $set: { timezone: zone } },
@@ -101,7 +101,7 @@ const getCountries = async (req, res) => {
         ttl: 1000 * 60 * 60 * 24, // Update once per day
       },
     });
-    countries = saveCountryPayload(response.data);
+    countries = saveCountryPayload(response.data.response);
     return(JSON.stringify(response.data));
   } catch (error) {
     console.log(error);
@@ -109,10 +109,11 @@ const getCountries = async (req, res) => {
   }
 }
 
-const saveCountryPayload = async (payload) => {
+const saveCountryPayload = async (countryData) => {
   // Save the country data
-  const countries = payload.response.map(country => ({ name: country.name, code: country.code, flag: country.flag }));
-  const bulkOps = payload.response.map(country => ({
+  countryData.isArray ? countryData : countryData = [countryData];
+  const countries = countryData.map(country => ({ name: country.name, code: country.code, flag: country.flag }));
+  const bulkOps = countryData.map(country => ({
     updateOne: {
       filter: { name: country.name },
       update: { $set: { name: country.name, code: country.code, flag: country.flag } },
@@ -140,7 +141,7 @@ const getLeagues = async (req, res) => {
       },
 
     });
-    saveLeagueRootPayload(response.data);
+    saveLeagueRootPayload(response.data.response);
     return(JSON.stringify(response.data));
   } catch (error) {
     console.log(error);
@@ -148,49 +149,75 @@ const getLeagues = async (req, res) => {
   }
 }
 
-const saveLeagueRootPayload = async (payload) => {
+const saveLeagueRootPayload = async (leagueRootData) => {
   try {
-    // Step 1: Save the season data
-    const seasons = await Promise.all(
-      payload.response[0].seasons.map(async (seasonData) => {
-        const season = new Season({
-          ...seasonData,
-        });
-        await season.save();
-        return season._id;
-      })
-    );
-
-    // Step 2: Save the country data
-    const country = new Country(payload.response[0].country);
-    await country.save();
-
-    // Step 3: Save the league data
-    const league = new League(payload.response[0].league);
-    await league.save();
-
-    // Step 4: Save the root object (LeagueRoot)
-    const leagueRoot = new LeagueRoot({
-      get: payload.get,
-      parameters: payload.parameters,
-      errors: payload.errors,
-      results: payload.results,
-      paging: payload.paging,
-      response: [
-        {
-          league: league._id,
-          country: country._id,
-          seasons: seasons,
-        },
-      ],
-    });
-    await leagueRoot.save();
-
-    console.log("Payload saved successfully!");
+    leagueRootData.forEach(async (leagueData) => {
+      // Step 1: Save the country data
+      await saveCountryPayload(leagueData.country);
+      // // Step 2: Save the league data
+      // await saveLeaguePayload(leagueData.league);
+      // // Step 3: Save the season data
+      // await saveSeasonPayload(leagueData.league, leagueData.season);
+    });      
+    // // Step 4: Save the root object (LeagueRoot)
+    // const leagueRoot = new LeagueRoot({
+    //   get: payload.get,
+    //   parameters: payload.parameters,
+    //   errors: payload.errors,
+    //   results: payload.results,
+    //   paging: payload.paging,
+    //   response: [
+    //     {
+    //       league: league._id,
+    //       country: country._id,
+    //       seasons: seasons,
+    //     },
+    //   ],
+    // });
+    // await leagueRoot.save();
+    console.log("League Payload saved successfully!");
   } catch (error) {
     console.error("Error saving payload:", error);
   }
 };
+
+// const saveLeaguePayload = async (leagueData) => {
+//   // Save the leagues data
+//   const leagues = leagueData.map(league => ({ name: league.name, type: league.type, logo: league.logo }));
+//   const bulkOps = leagueData.map(league => ({
+//     updateOne: {
+//       filter: { name: league.name },
+//       update: { $set: { name: league.name, type: league.type, logo: league.logo } },
+//       upsert: true
+//     }
+//   }));
+//   await League.bulkWrite(bulkOps)
+//     .then(() => 
+//       console.log('Leagues saved successfully'))
+//     .catch(err => 
+//       console.error('Error saving leagues:', err)
+//     );
+//   return leagues;
+// }
+
+// const saveSeasonPayload = async (league, payload) => {
+//   // Save the seasons data
+//   const seasons = payload.response.map(season => ({ league: league, year: season.year, start: season.start, end: season.end, current: season.current }));
+//   const bulkOps = payload.response.map(season => ({
+//     updateOne: {
+//       filter: { league: league, year: season.year },
+//       update: { $set: { league: league, year: season.year, start: season.start, end: season.end, current: season.current } },
+//       upsert: true
+//     }
+//   }));
+//   await Season.bulkWrite(bulkOps)
+//     .then(() => 
+//       console.log('Seasons saved successfully'))
+//     .catch(err => 
+//       console.error('Error saving seasons:', err)
+//     );
+//   return seasons;
+// }
 
 const getTeam = async (req, res) => {
   try {
