@@ -41,8 +41,8 @@ router.get("/test", async (req, res) => {
     result += "Timezones: " + timezones;
     countries = await getCountries(req, res);
     result += "Countries: " + countries;
-    // leagues = await getLeagues(req, res);
-    // result += "\nLeagues: " + leagues;
+    leagues = await getLeagues(req, res);
+    result += "\nLeagues: " + leagues;
     // team = await getTeam(req, res);
     // result += "\nTeam: " + team;
     res.send(result);
@@ -163,7 +163,7 @@ const saveLeagueRootPayload = async (leagueRootData) => {
       // Step 1: Save the country data
       await saveCountryPayload(leagueData.country);
       // // Step 2: Save the league data
-      // await saveLeaguePayload(leagueData.league);
+      await saveLeaguePayload(leagueData.league);
       // // Step 3: Save the season data
       // await saveSeasonPayload(leagueData.league, leagueData.season);
     });
@@ -189,24 +189,28 @@ const saveLeagueRootPayload = async (leagueRootData) => {
   }
 };
 
-// const saveLeaguePayload = async (leagueData) => {
-//   // Save the leagues data
-//   const leagues = leagueData.map(league => ({ name: league.name, type: league.type, logo: league.logo }));
-//   const bulkOps = leagueData.map(league => ({
-//     updateOne: {
-//       filter: { name: league.name },
-//       update: { $set: { name: league.name, type: league.type, logo: league.logo } },
-//       upsert: true
-//     }
-//   }));
-//   await League.bulkWrite(bulkOps)
-//     .then(() =>
-//       console.log('Leagues saved successfully'))
-//     .catch(err =>
-//       console.error('Error saving leagues:', err)
-//     );
-//   return leagues;
-// }
+const saveLeaguePayload = async (leagueData) => {
+  // Save the leagues data
+  leagueData.isArray ? leagueData : (leagueData = [leagueData]);
+  const leagues = leagueData.map((league) => ({
+    name: league.name,
+    type: league.type,
+    logo: league.logo,
+  }));
+  const bulkOps = leagueData.map((league) => ({
+    updateOne: {
+      filter: { name: league.name },
+      update: {
+        $set: { name: league.name, type: league.type, logo: league.logo },
+      },
+      upsert: true,
+    },
+  }));
+  await League.bulkWrite(bulkOps)
+    .then(() => console.log("Leagues saved successfully"))
+    .catch((err) => console.error("Error saving leagues:", err));
+  return leagues;
+};
 
 // const saveSeasonPayload = async (league, payload) => {
 //   // Save the seasons data
