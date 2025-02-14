@@ -1,7 +1,8 @@
-const mongoose = require('mongoose');
-const Venue = require('./Venue');
+const mongoose = require("mongoose");
+const Venue = require("./Venue");
 
-const TeamSchema = new mongoose.Schema({
+const TeamSchema = new mongoose.Schema(
+  {
     id: { type: Number },
     name: { type: String },
     code: { type: String },
@@ -10,7 +11,9 @@ const TeamSchema = new mongoose.Schema({
     national: { type: Boolean },
     logo: { type: String },
     venue: { type: mongoose.Schema.Types.ObjectId, ref: "Venue" },
-}, { timestamps: true });
+  },
+  { timestamps: true }
+);
 
 const Team = mongoose.model("Team", TeamSchema);
 

@@ -1,6 +1,6 @@
 # https://medium.com/@bjnandi/containerize-your-full-stack-web-application-mern-with-docker-compose-4900156ba9dd
 # https://www.geeksforgeeks.org/mern-stack/
-version: '3.8'
+version: "3.8"
 
 services:
   # Client service
@@ -12,7 +12,7 @@ services:
     container_name: frontend
     # command: sh # Run bash instead of npm start
     # stdin_open: true    # Keep stdin open
-    # tty: true           # Keep the terminal session open    
+    # tty: true           # Keep the terminal session open
     ports:
       - "80:80"
     depends_on:
@@ -58,5 +58,5 @@ services:
       - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     command: ["mongod", "--quiet"]
 
-volumes: 
+volumes:
   mongodb_data:

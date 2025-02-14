@@ -1,16 +1,31 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const connectDB = async () => {
-    // console.log('mongodb://' + process.env.DB_USER + ':' + process.env.DB_PASSWORD + '@' + process.env.DB_HOST + ':' + process.env.DB_PORT + '/' + process.env.DB_NAME);
-    await mongoose.connect('mongodb://' + process.env.DB_USER + ':' + process.env.DB_PASSWORD + '@' + process.env.DB_HOST + ':' + process.env.DB_PORT + '/' + process.env.DB_NAME, {
+  // console.log('mongodb://' + process.env.DB_USER + ':' + process.env.DB_PASSWORD + '@' + process.env.DB_HOST + ':' + process.env.DB_PORT + '/' + process.env.DB_NAME);
+  await mongoose
+    .connect(
+      "mongodb://" +
+        process.env.DB_USER +
+        ":" +
+        process.env.DB_PASSWORD +
+        "@" +
+        process.env.DB_HOST +
+        ":" +
+        process.env.DB_PORT +
+        "/" +
+        process.env.DB_NAME,
+      {
         useNewUrlParser: true,
         useUnifiedTopology: true,
-    }).then(() => {
-    console.log('MongoDB connected!');
-    // Now proceed with your code to save data to the database.
-    }).catch((err) => {
-    console.error('Error connecting to MongoDB:', err);
+      }
+    )
+    .then(() => {
+      console.log("MongoDB connected!");
+      // Now proceed with your code to save data to the database.
+    })
+    .catch((err) => {
+      console.error("Error connecting to MongoDB:", err);
     });
-}
+};
 
 module.exports = connectDB;

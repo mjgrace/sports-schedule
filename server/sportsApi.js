@@ -13,13 +13,13 @@ module.exports = {
   Season,
   Timezone,
   Venue,
-  Team
+  Team,
 };
 
 const mongoose = require("mongoose");
-const express = require('express');
-const axios = require('axios');
-const { setupCache } = require('axios-cache-interceptor');
+const express = require("express");
+const axios = require("axios");
+const { setupCache } = require("axios-cache-interceptor");
 
 const router = express.Router();
 
@@ -29,13 +29,13 @@ const axiosInstance = setupCache(axios.create(), {
 });
 
 // Route to retrieve leagues
-router.get('/leagues', async (req, res) => {    
+router.get("/leagues", async (req, res) => {
   getLeagues(req, res);
 });
 
 // Test Route to get data points
-router.get('/test', async (req, res) => {    
-  result = '';
+router.get("/test", async (req, res) => {
+  result = "";
   try {
     timezones = await getTimezones(req, res);
     result += "Timezones: " + timezones;
@@ -45,7 +45,7 @@ router.get('/test', async (req, res) => {
     // result += "\nLeagues: " + leagues;
     // team = await getTeam(req, res);
     // result += "\nTeam: " + team;
-    res.send(result);  
+    res.send(result);
   } catch (error) {
     console.log(error);
     res.status(500).send("Error fetching data");
@@ -54,100 +54,108 @@ router.get('/test', async (req, res) => {
 
 const getTimezones = async (req, res) => {
   try {
-    const response = await axiosInstance.get(process.env.API_SPORTS_URL + '/timezone', {
-      headers: {
-        'x-rapidapi-host': process.env.API_SPORTS_HOST,
-        'x-rapidapi-key': process.env.API_SPORTS_API_KEY
-      },
-      cache: {
-        update: false, // Don't update cache if expired
-      },
-    });
+    const response = await axiosInstance.get(
+      process.env.API_SPORTS_URL + "/timezone",
+      {
+        headers: {
+          "x-rapidapi-host": process.env.API_SPORTS_HOST,
+          "x-rapidapi-key": process.env.API_SPORTS_API_KEY,
+        },
+        cache: {
+          update: false, // Don't update cache if expired
+        },
+      }
+    );
     timezones = saveTimezonePayload(response.data.response);
-    return(JSON.stringify(response.data));
+    return JSON.stringify(response.data);
   } catch (error) {
     console.log(error);
-    return("Error fetching data");
+    return "Error fetching data";
   }
-}
+};
 
 const saveTimezonePayload = async (timezoneData) => {
   // Save the timezone data
-  const timezones = timezoneData.map(zone => ({ timezone: zone }));
-  const bulkOps = timezoneData.map(zone => ({
+  const timezones = timezoneData.map((zone) => ({ timezone: zone }));
+  const bulkOps = timezoneData.map((zone) => ({
     updateOne: {
       filter: { timezone: zone },
       update: { $set: { timezone: zone } },
-      upsert: true
-    }
+      upsert: true,
+    },
   }));
   await Timezone.bulkWrite(bulkOps)
-    .then(() => 
-      console.log('Timezones saved successfully'))
-    .catch(err => 
-      console.error('Error saving timezones:', err)
-    );
+    .then(() => console.log("Timezones saved successfully"))
+    .catch((err) => console.error("Error saving timezones:", err));
   return timezones;
-}
+};
 
 const getCountries = async (req, res) => {
   try {
-    const response = await axiosInstance.get(process.env.API_SPORTS_URL + '/countries', {
-      headers: {
-        'x-rapidapi-host': process.env.API_SPORTS_HOST,
-        'x-rapidapi-key': process.env.API_SPORTS_API_KEY
-      },
-      cache: {
-        ttl: 1000 * 60 * 60 * 24, // Update once per day
-      },
-    });
+    const response = await axiosInstance.get(
+      process.env.API_SPORTS_URL + "/countries",
+      {
+        headers: {
+          "x-rapidapi-host": process.env.API_SPORTS_HOST,
+          "x-rapidapi-key": process.env.API_SPORTS_API_KEY,
+        },
+        cache: {
+          ttl: 1000 * 60 * 60 * 24, // Update once per day
+        },
+      }
+    );
     countries = saveCountryPayload(response.data.response);
-    return(JSON.stringify(response.data));
+    return JSON.stringify(response.data);
   } catch (error) {
     console.log(error);
-    return("Error fetching data");
+    return "Error fetching data";
   }
-}
+};
 
 const saveCountryPayload = async (countryData) => {
   // Save the country data
-  countryData.isArray ? countryData : countryData = [countryData];
-  const countries = countryData.map(country => ({ name: country.name, code: country.code, flag: country.flag }));
-  const bulkOps = countryData.map(country => ({
+  countryData.isArray ? countryData : (countryData = [countryData]);
+  const countries = countryData.map((country) => ({
+    name: country.name,
+    code: country.code,
+    flag: country.flag,
+  }));
+  const bulkOps = countryData.map((country) => ({
     updateOne: {
       filter: { name: country.name },
-      update: { $set: { name: country.name, code: country.code, flag: country.flag } },
-      upsert: true
-    }
+      update: {
+        $set: { name: country.name, code: country.code, flag: country.flag },
+      },
+      upsert: true,
+    },
   }));
   await Country.bulkWrite(bulkOps)
-    .then(() => 
-      console.log('Countries saved successfully'))
-    .catch(err => 
-      console.error('Error saving countries:', err)
-    );
+    .then(() => console.log("Countries saved successfully"))
+    .catch((err) => console.error("Error saving countries:", err));
   return countries;
-}
+};
 
 const getLeagues = async (req, res) => {
   try {
-    const response = await axiosInstance.get(process.env.API_SPORTS_URL + '/leagues', {
-      headers: {
-        'x-rapidapi-host': process.env.API_SPORTS_HOST,
-        'x-rapidapi-key': process.env.API_SPORTS_API_KEY
-      },
-      cache: {
-        ttl: 1000 * 60 * 60, // Update once per hour
-      },
-
-    });
+    const response = await axiosInstance.get(
+      process.env.API_SPORTS_URL + "/leagues",
+      {
+        headers: {
+          "x-rapidapi-host": process.env.API_SPORTS_HOST,
+          "x-rapidapi-key": process.env.API_SPORTS_API_KEY,
+        },
+        cache: {
+          ttl: 1000 * 60 * 60, // Update once per hour
+        },
+      }
+    );
     saveLeagueRootPayload(response.data.response);
-    return(JSON.stringify(response.data));
+    return JSON.stringify(response.data);
   } catch (error) {
     console.log(error);
-    return("Error fetching data");
+    return "Error fetching data";
   }
-}
+};
 
 const saveLeagueRootPayload = async (leagueRootData) => {
   try {
@@ -158,7 +166,7 @@ const saveLeagueRootPayload = async (leagueRootData) => {
       // await saveLeaguePayload(leagueData.league);
       // // Step 3: Save the season data
       // await saveSeasonPayload(leagueData.league, leagueData.season);
-    });      
+    });
     // // Step 4: Save the root object (LeagueRoot)
     // const leagueRoot = new LeagueRoot({
     //   get: payload.get,
@@ -192,9 +200,9 @@ const saveLeagueRootPayload = async (leagueRootData) => {
 //     }
 //   }));
 //   await League.bulkWrite(bulkOps)
-//     .then(() => 
+//     .then(() =>
 //       console.log('Leagues saved successfully'))
-//     .catch(err => 
+//     .catch(err =>
 //       console.error('Error saving leagues:', err)
 //     );
 //   return leagues;
@@ -211,9 +219,9 @@ const saveLeagueRootPayload = async (leagueRootData) => {
 //     }
 //   }));
 //   await Season.bulkWrite(bulkOps)
-//     .then(() => 
+//     .then(() =>
 //       console.log('Seasons saved successfully'))
-//     .catch(err => 
+//     .catch(err =>
 //       console.error('Error saving seasons:', err)
 //     );
 //   return seasons;
@@ -221,39 +229,41 @@ const saveLeagueRootPayload = async (leagueRootData) => {
 
 const getTeam = async (req, res) => {
   try {
-      const teamId = req.query.teamId;
-      const teamUrl = process.env.API_SPORTS_URL + "/teams" + (teamId ? ("?id=" + encodeURIComponent(teamId)) : '')
-      console.log("teamUrl: " + teamUrl);
+    const teamId = req.query.teamId;
+    const teamUrl =
+      process.env.API_SPORTS_URL +
+      "/teams" +
+      (teamId ? "?id=" + encodeURIComponent(teamId) : "");
+    console.log("teamUrl: " + teamUrl);
 
-      const response = await axiosInstance.get(teamUrl, {
+    const response = await axiosInstance.get(teamUrl, {
       headers: {
-        'x-rapidapi-host': process.env.API_SPORTS_HOST,
-        'x-rapidapi-key': process.env.API_SPORTS_API_KEY
+        "x-rapidapi-host": process.env.API_SPORTS_HOST,
+        "x-rapidapi-key": process.env.API_SPORTS_API_KEY,
       },
       cache: {
         ttl: 1000 * 60 * 60 * 24, // Update once per day
       },
-
     });
     saveTeamPayload(response.data);
-    return(JSON.stringify(response.data));
+    return JSON.stringify(response.data);
   } catch (error) {
     console.log(error);
-    return("Error fetching data");
+    return "Error fetching data";
   }
-}
+};
 
 const saveTeamPayload = async (payload) => {
   try {
     console.log("Team Payload:" + JSON.stringify(payload));
     const team = new Team({
       id: payload.response[0].team.id,
-      name: payload.response[0].team.name, 
+      name: payload.response[0].team.name,
       code: payload.response[0].team.code,
       country: payload.response[0].team.country,
       founded: payload.response[0].team.founded,
       national: payload.response[0].team.national,
-      logo: payload.response[0].team.logo    
+      logo: payload.response[0].team.logo,
     });
     const venue = new Venue({
       id: payload.response[0].venue.id,
@@ -262,13 +272,13 @@ const saveTeamPayload = async (payload) => {
       city: payload.response[0].venue.city,
       capacity: payload.response[0].venue.capacity,
       surface: payload.response[0].venue.surface,
-      image: payload.response[0].venue.image
+      image: payload.response[0].venue.image,
     });
     await Team.insertMany(team, { ordered: false });
-    console.log('Teams saved successfully!');
+    console.log("Teams saved successfully!");
     await Venue.insertMany(venue, { ordered: false });
-    console.log('Venues saved successfully!');
-    return(JSON.stringify(response.data));
+    console.log("Venues saved successfully!");
+    return JSON.stringify(response.data);
   } catch (error) {
     console.error("Error saving payload:", error);
   }
