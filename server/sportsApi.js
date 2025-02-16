@@ -114,7 +114,7 @@ const getCountries = async (req, res) => {
 
 const saveCountryPayload = async (countryData) => {
   // Save the country data
-  countryData.isArray ? countryData : (countryData = [countryData]);
+  countryData = countryData.isArray ? countryData : [countryData];
   const countries = countryData.map((country) => ({
     name: country.name,
     code: country.code,
@@ -130,7 +130,9 @@ const saveCountryPayload = async (countryData) => {
     },
   }));
   await Country.bulkWrite(bulkOps)
-    .then(() => console.log("Countries saved successfully"))
+    .then(() => {
+      // console.log("Countries saved successfully");
+    })
     .catch((err) => console.error("Error saving countries:", err));
   return countries;
 };
@@ -164,26 +166,10 @@ const saveLeagueRootPayload = async (leagueRootData) => {
       await saveCountryPayload(leagueData.country);
       // // Step 2: Save the league data
       await saveLeaguePayload(leagueData.league);
-      // // Step 3: Save the season data
-      // await saveSeasonPayload(leagueData.league, leagueData.season);
+      const league = await League.findOne({ name: leagueData.league.name });
+      // Step 3: Save the season data
+      await saveSeasonPayload(league._id, leagueData.seasons);
     });
-    // // Step 4: Save the root object (LeagueRoot)
-    // const leagueRoot = new LeagueRoot({
-    //   get: payload.get,
-    //   parameters: payload.parameters,
-    //   errors: payload.errors,
-    //   results: payload.results,
-    //   paging: payload.paging,
-    //   response: [
-    //     {
-    //       league: league._id,
-    //       country: country._id,
-    //       seasons: seasons,
-    //     },
-    //   ],
-    // });
-    // await leagueRoot.save();
-    console.log("League Payload saved successfully!");
   } catch (error) {
     console.error("Error saving payload:", error);
   }
@@ -191,7 +177,7 @@ const saveLeagueRootPayload = async (leagueRootData) => {
 
 const saveLeaguePayload = async (leagueData) => {
   // Save the leagues data
-  leagueData.isArray ? leagueData : (leagueData = [leagueData]);
+  leagueData = leagueData.isArray ? leagueData : [leagueData];
   const leagues = leagueData.map((league) => ({
     name: league.name,
     type: league.type,
@@ -207,29 +193,47 @@ const saveLeaguePayload = async (leagueData) => {
     },
   }));
   await League.bulkWrite(bulkOps)
-    .then(() => console.log("Leagues saved successfully"))
+    .then(() => {
+      // console.log("Leagues saved successfully");
+    })
     .catch((err) => console.error("Error saving leagues:", err));
   return leagues;
 };
 
-// const saveSeasonPayload = async (league, payload) => {
-//   // Save the seasons data
-//   const seasons = payload.response.map(season => ({ league: league, year: season.year, start: season.start, end: season.end, current: season.current }));
-//   const bulkOps = payload.response.map(season => ({
-//     updateOne: {
-//       filter: { league: league, year: season.year },
-//       update: { $set: { league: league, year: season.year, start: season.start, end: season.end, current: season.current } },
-//       upsert: true
-//     }
-//   }));
-//   await Season.bulkWrite(bulkOps)
-//     .then(() =>
-//       console.log('Seasons saved successfully'))
-//     .catch(err =>
-//       console.error('Error saving seasons:', err)
-//     );
-//   return seasons;
-// }
+const saveSeasonPayload = async (leagueId, seasonData) => {
+  // Save the seasons data
+  seasonData = seasonData.isArray ? seasonData[0] : seasonData;
+  console.log("Season Data: " + JSON.stringify(seasonData));
+  const seasons = seasonData.map((season) => ({
+    league: leagueId,
+    year: season.year,
+    start: season.start,
+    end: season.end,
+    current: season.current,
+  }));
+  console.log("Seasons: " + JSON.stringify(seasons));
+  const bulkOps = seasons.map((season) => ({
+    updateOne: {
+      filter: { league: season.league, year: season.year },
+      update: {
+        $set: {
+          league: season.league,
+          year: season.year,
+          start: season.start,
+          end: season.end,
+          current: season.current,
+        },
+      },
+      upsert: true,
+    },
+  }));
+  await Season.bulkWrite(bulkOps)
+    .then(() => {
+      // console.log("Season saved successfully");
+    })
+    .catch((err) => console.error("Error saving season:", err));
+  return seasons;
+};
 
 const getTeam = async (req, res) => {
   try {
