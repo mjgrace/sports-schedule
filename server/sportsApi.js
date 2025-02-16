@@ -28,7 +28,28 @@ const axiosInstance = setupCache(axios.create(), {
 
 // Route to retrieve leagues
 router.get("/leagues", async (req, res) => {
-  getLeagues(req, res);
+  result = "";
+  try {
+    leagues = await getLeagues(req, res);
+    result += "\nLeagues: " + leagues;
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Error fetching data: " + error);
+  }
+});
+
+// Route to retrieve teams
+router.get("/teams", async (req, res) => {
+  result = "";
+  try {
+    team = await getTeams(req, res);
+    result += "\nTeam: " + team;
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Error fetching data: " + error);
+  }
 });
 
 // Test Route to get data points
@@ -41,12 +62,12 @@ router.get("/test", async (req, res) => {
     result += "Countries: " + countries;
     leagues = await getLeagues(req, res);
     result += "\nLeagues: " + leagues;
-    // team = await getTeam(req, res);
-    // result += "\nTeam: " + team;
+    team = await getTeams(req, res);
+    result += "\nTeam: " + team;
     res.send(result);
   } catch (error) {
     console.log(error);
-    res.status(500).send("Error fetching data");
+    res.status(500).send("Error fetching data: " + error);
   }
 });
 
@@ -83,7 +104,9 @@ const saveTimezonePayload = async (timezoneData) => {
     },
   }));
   await Timezone.bulkWrite(bulkOps)
-    .then(() => console.log("Timezones saved successfully"))
+    .then(() => {
+      // console.log("Timezones saved successfully");
+    })
     .catch((err) => console.error("Error saving timezones:", err));
   return timezones;
 };
@@ -239,14 +262,16 @@ const saveSeasonPayload = async (league, seasonData) => {
   return seasons;
 };
 
-const getTeam = async (req, res) => {
+const getTeams = async (req, res) => {
   try {
     const teamId = req.query.teamId;
     const leagueId = req.query.leagueId;
+    const season = req.query.season;
     teamUrl = process.env.API_SPORTS_URL + "/teams";
     const teamParams = new URLSearchParams();
     if (teamId) teamParams.append("id", teamId);
     if (leagueId) teamParams.append("league", leagueId);
+    if (season) teamParams.append("season", season);
     teamUrl += "?" + teamParams.toString();
     console.log("teamUrl: " + teamUrl);
 
@@ -262,7 +287,7 @@ const getTeam = async (req, res) => {
     response.data.response.forEach(async (team) => {
       await saveTeamPayload(team);
     });
-    return JSON.stringify(response.data);
+    return JSON.stringify(response.data.response);
   } catch (error) {
     console.log(error);
     return "Error fetching data";
@@ -271,7 +296,6 @@ const getTeam = async (req, res) => {
 
 const saveTeamPayload = async (teamData) => {
   try {
-    console.log("Team Payload:" + JSON.stringify(teamData));
     const team = new Team({
       id: teamData.team.id,
       name: teamData.team.name,
@@ -281,6 +305,12 @@ const saveTeamPayload = async (teamData) => {
       national: teamData.team.national,
       logo: teamData.team.logo,
     });
+    await Team.updateOne(
+      { id: teamData.team.id },
+      { $set: team },
+      { upsert: true }
+    );
+    console.log("Teams saved successfully!");
     const venue = new Venue({
       id: teamData.venue.id,
       name: teamData.venue.name,
@@ -290,11 +320,12 @@ const saveTeamPayload = async (teamData) => {
       surface: teamData.venue.surface,
       image: teamData.venue.image,
     });
-    await Team.updateOne(team, { ordered: false, upsert: true });
-    console.log("Teams saved successfully!");
-    await Venue.updateOne(venue, { ordered: false, upsert: true });
-    console.log("Venues saved successfully!");
-    return JSON.stringify(response.data);
+    await Venue.updateOne(
+      { id: teamData.venue.id },
+      { $set: venue },
+      { upsert: true }
+    );
+    return JSON.stringify(teamData);
   } catch (error) {
     console.error("Error saving payload:", error);
   }
