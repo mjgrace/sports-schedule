@@ -1,4 +1,3 @@
-const LeagueRoot = require("./models/football/LeagueRoot");
 const League = require("./models/football/League");
 const Country = require("./models/football/Country");
 const Season = require("./models/football/Season");
@@ -7,7 +6,6 @@ const Venue = require("./models/football/Venue");
 const Team = require("./models/football/Team");
 
 module.exports = {
-  LeagueRoot,
   League,
   Country,
   Season,
@@ -203,7 +201,6 @@ const saveLeaguePayload = async (leagueData) => {
 const saveSeasonPayload = async (leagueId, seasonData) => {
   // Save the seasons data
   seasonData = seasonData.isArray ? seasonData[0] : seasonData;
-  console.log("Season Data: " + JSON.stringify(seasonData));
   const seasons = seasonData.map((season) => ({
     league: leagueId,
     year: season.year,
@@ -211,7 +208,6 @@ const saveSeasonPayload = async (leagueId, seasonData) => {
     end: season.end,
     current: season.current,
   }));
-  console.log("Seasons: " + JSON.stringify(seasons));
   const bulkOps = seasons.map((season) => ({
     updateOne: {
       filter: { league: season.league, year: season.year },
@@ -238,10 +234,12 @@ const saveSeasonPayload = async (leagueId, seasonData) => {
 const getTeam = async (req, res) => {
   try {
     const teamId = req.query.teamId;
-    const teamUrl =
-      process.env.API_SPORTS_URL +
-      "/teams" +
-      (teamId ? "?id=" + encodeURIComponent(teamId) : "");
+    const leagueId = req.query.leagueId;
+    const teamUrl = process.env.API_SPORTS_URL + "/teams";
+    const teamParams = new URLSearchParams();
+    if (teamId) teamParams.append("id", teamId);
+    if (leagueId) teamParams.append("league", leagueId);
+    teamUrl += "?" + teamParams.toString();
     console.log("teamUrl: " + teamUrl);
 
     const response = await axiosInstance.get(teamUrl, {
@@ -253,7 +251,9 @@ const getTeam = async (req, res) => {
         ttl: 1000 * 60 * 60 * 24, // Update once per day
       },
     });
-    saveTeamPayload(response.data);
+    response.data.response.forEach(async (team) => {
+      await saveTeamPayload(team);
+    });
     return JSON.stringify(response.data);
   } catch (error) {
     console.log(error);
@@ -261,30 +261,30 @@ const getTeam = async (req, res) => {
   }
 };
 
-const saveTeamPayload = async (payload) => {
+const saveTeamPayload = async (teamData) => {
   try {
-    console.log("Team Payload:" + JSON.stringify(payload));
+    console.log("Team Payload:" + JSON.stringify(teamData));
     const team = new Team({
-      id: payload.response[0].team.id,
-      name: payload.response[0].team.name,
-      code: payload.response[0].team.code,
-      country: payload.response[0].team.country,
-      founded: payload.response[0].team.founded,
-      national: payload.response[0].team.national,
-      logo: payload.response[0].team.logo,
+      id: teamData.team.id,
+      name: teamData.team.name,
+      code: teamData.team.code,
+      country: teamData.team.country,
+      founded: teamData.team.founded,
+      national: teamData.team.national,
+      logo: teamData.team.logo,
     });
     const venue = new Venue({
-      id: payload.response[0].venue.id,
-      name: payload.response[0].venue.name,
-      address: payload.response[0].venue.address,
-      city: payload.response[0].venue.city,
-      capacity: payload.response[0].venue.capacity,
-      surface: payload.response[0].venue.surface,
-      image: payload.response[0].venue.image,
+      id: teamData.venue.id,
+      name: teamData.venue.name,
+      address: teamData.venue.address,
+      city: teamData.venue.city,
+      capacity: teamData.venue.capacity,
+      surface: teamData.venue.surface,
+      image: teamData.venue.image,
     });
-    await Team.insertMany(team, { ordered: false });
+    await Team.updateOne(team, { ordered: false, upsert: true });
     console.log("Teams saved successfully!");
-    await Venue.insertMany(venue, { ordered: false });
+    await Venue.updateOne(venue, { ordered: false, upsert: true });
     console.log("Venues saved successfully!");
     return JSON.stringify(response.data);
   } catch (error) {

@@ -6,7 +6,6 @@ const axios = require("axios");
 
 const connectDB = require("./config/db");
 
-const LeagueRoot = require("./models/football/LeagueRoot");
 const League = require("./models/football/League");
 const Country = require("./models/football/Country");
 const Season = require("./models/football/Season");
@@ -15,7 +14,6 @@ const Venue = require("./models/football/Venue");
 const Team = require("./models/football/Team");
 
 module.exports = {
-  LeagueRoot,
   League,
   Country,
   Season,
