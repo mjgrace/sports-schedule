@@ -166,7 +166,7 @@ const saveLeagueRootPayload = async (leagueRootData) => {
       await saveLeaguePayload(leagueData.league);
       const league = await League.findOne({ name: leagueData.league.name });
       // Step 3: Save the season data
-      await saveSeasonPayload(league._id, leagueData.seasons);
+      await saveSeasonPayload(league, leagueData.seasons);
     });
   } catch (error) {
     console.error("Error saving payload:", error);
@@ -177,15 +177,21 @@ const saveLeaguePayload = async (leagueData) => {
   // Save the leagues data
   leagueData = leagueData.isArray ? leagueData : [leagueData];
   const leagues = leagueData.map((league) => ({
+    id: league.id,
     name: league.name,
     type: league.type,
     logo: league.logo,
   }));
   const bulkOps = leagueData.map((league) => ({
     updateOne: {
-      filter: { name: league.name },
+      filter: { id: league.id },
       update: {
-        $set: { name: league.name, type: league.type, logo: league.logo },
+        $set: {
+          id: league.id,
+          name: league.name,
+          type: league.type,
+          logo: league.logo,
+        },
       },
       upsert: true,
     },
@@ -198,11 +204,12 @@ const saveLeaguePayload = async (leagueData) => {
   return leagues;
 };
 
-const saveSeasonPayload = async (leagueId, seasonData) => {
+const saveSeasonPayload = async (league, seasonData) => {
   // Save the seasons data
   seasonData = seasonData.isArray ? seasonData[0] : seasonData;
   const seasons = seasonData.map((season) => ({
-    league: leagueId,
+    league: league._id,
+    leagueId: league.id,
     year: season.year,
     start: season.start,
     end: season.end,
@@ -214,6 +221,7 @@ const saveSeasonPayload = async (leagueId, seasonData) => {
       update: {
         $set: {
           league: season.league,
+          leagueId: season.leagueId,
           year: season.year,
           start: season.start,
           end: season.end,
@@ -235,7 +243,7 @@ const getTeam = async (req, res) => {
   try {
     const teamId = req.query.teamId;
     const leagueId = req.query.leagueId;
-    const teamUrl = process.env.API_SPORTS_URL + "/teams";
+    teamUrl = process.env.API_SPORTS_URL + "/teams";
     const teamParams = new URLSearchParams();
     if (teamId) teamParams.append("id", teamId);
     if (leagueId) teamParams.append("league", leagueId);

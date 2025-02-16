@@ -8,6 +8,7 @@ const SeasonSchema = new mongoose.Schema(
       ref: "League",
       required: true,
     },
+    leagueId: { type: Number, required: true },
     year: { type: Number, required: true },
     start: { type: String },
     end: { type: String },
