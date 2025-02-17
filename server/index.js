@@ -51,14 +51,10 @@ app.post("/data", (req, res) => {
 
 // Define Sports API routes
 const sportsApiRoutes = require("./sportsApi");
-
 app.use("/sports_api", sportsApiRoutes);
 
-// Example of a route with a URL parameter (e.g., /user/:id)
-app.get("/user/:id", (req, res) => {
-  const userId = req.params.id;
-  res.json({ message: `User ID: ${userId}` });
-});
+const teamsRouter = require("./routes/teams");
+app.use("/teams", teamsRouter);
 
 // Handle 404 errors (when no route matches)
 app.use((req, res, next) => {
