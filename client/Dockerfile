@@ -25,7 +25,7 @@ FROM nginx:1.25.2-alpine-slim
 # Copy the static file to my Nginx folder to serve static contain
 COPY --from=builder /app/build /usr/share/nginx/html
 
-COPY nginx.conf /etc/nginx/nginx.conf
+# COPY nginx.conf /etc/nginx/nginx.conf
 
 # Open the port to react
 EXPOSE 80
