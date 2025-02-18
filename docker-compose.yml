@@ -11,8 +11,8 @@ services:
 
     container_name: frontend
     # command: sh # Run bash instead of npm start
-    # stdin_open: true    # Keep stdin open
-    # tty: true           # Keep the terminal session open
+    # stdin_open: true # Keep stdin open
+    # tty: true # Keep the terminal session open
     ports:
       - "80:80"
     depends_on:
