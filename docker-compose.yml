@@ -15,6 +15,8 @@ services:
     # tty: true # Keep the terminal session open
     ports:
       - "80:80"
+    networks:
+      - mynetwork
     depends_on:
       - server
 
@@ -39,6 +41,8 @@ services:
       - DB_PASSWORD=$MONGODB_PASSWORD
       - DB_NAME=$MONGODB_DATABASE
       - DB_PORT=$MONGODB_DOCKER_PORT
+    networks:
+      - mynetwork
     depends_on:
       - mongodb
 
@@ -57,6 +61,12 @@ services:
       - mongodb_data:/data/db
       - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     command: ["mongod", "--quiet"]
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
 
 volumes:
   mongodb_data:
