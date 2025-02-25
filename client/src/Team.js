@@ -13,14 +13,16 @@ function Team() {
 
   return (
     <div>
-      <h1>Teams</h1>
-      <ul>
-        {teams.length > 0 ? (
-          teams.map((team) => <li key={team.id}>{team.name}</li>)
-        ) : (
-          <p>No teams found.</p>
-        )}
-      </ul>
+      {teams.length > 0 ? (
+        teams.map((team) => (
+          <p>
+            {/* <img alt={team.name} src={team.logo} /> */}
+            {team.name}
+          </p>
+        ))
+      ) : (
+        <p>No teams found.</p>
+      )}
     </div>
   );
 }
