@@ -5,10 +5,12 @@ import "./index.css";
 // import Content from "./Content";
 import Season from "./Season";
 import reportWebVitals from "./reportWebVitals";
+import YearList from "./YearList";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
+    <YearList />
     <Season />
   </React.StrictMode>
 );
