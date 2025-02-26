@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./Season.css";
+import "../styles/Season.css";
 
 function Season() {
   const [seasons, setSeasons] = useState([]);

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./Team.css";
+import "../styles/Team.css";
 
 function Team() {
   const [teams, setTeams] = useState([]);

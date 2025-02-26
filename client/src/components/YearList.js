@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./YearList.css";
+import "../styles/YearList.css";
 
 function YearList() {
   const [selected, setSelected] = useState("");

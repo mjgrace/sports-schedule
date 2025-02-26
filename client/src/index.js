@@ -1,11 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
+import reportWebVitals from "./reportWebVitals";
+import "./styles/index.css";
 // import App from "./App";
 // import Content from "./Content";
-import Season from "./Season";
-import reportWebVitals from "./reportWebVitals";
-import YearList from "./YearList";
+import Season from "./components/Season";
+import YearList from "./components/YearList";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
