@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../styles/Team.css";
 
-function Team() {
+const Team = () => {
   const [teams, setTeams] = useState([]);
 
   useEffect(() => {
@@ -25,6 +25,6 @@ function Team() {
       )}
     </div>
   );
-}
+};
 
 export default Team;
