@@ -6,12 +6,15 @@ import "./styles/index.css";
 // import Content from "./Content";
 import Season from "./components/Season";
 import YearList from "./components/YearList";
+import { YearProvider } from "./contexts/YearContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <YearList />
-    <Season />
+    <YearProvider>
+      <YearList />
+      <Season />
+    </YearProvider>
   </React.StrictMode>
 );
 
