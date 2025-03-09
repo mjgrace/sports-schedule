@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
+import { useYear } from "../contexts/YearContext";
 import "../styles/Season.css";
 
-function Season() {
+const Season = () => {
   const [seasons, setSeasons] = useState([]);
+  const { year, setYear } = useYear();
 
   useEffect(() => {
-    fetch("http://localhost:5000/seasons?year=2024&current=true")
+    fetch(`http://localhost:5000/seasons?year=${year}&current=true`)
       .then((response) => response.json())
       .then((data) => setSeasons(data || []))
       .catch((error) => console.error("Error fetching data:", error));
-  }, []);
+  }, [year]);
 
   return (
     <div>
@@ -25,6 +27,6 @@ function Season() {
       )}
     </div>
   );
-}
+};
 
 export default Season;

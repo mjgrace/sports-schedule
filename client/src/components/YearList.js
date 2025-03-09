@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
+import { useYear } from "../contexts/YearContext";
 import "../styles/YearList.css";
 
-function YearList() {
-  const [selected, setSelected] = useState("");
-  const [options, setOptions] = useState([]);
+const YearList = () => {
+  const [yearOptions, setYearOptions] = useState([]);
+  const { year, setYear } = useYear();
 
   useEffect(() => {
     fetch("http://localhost:5000/seasons/years")
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data)) {
-          setOptions(data); // Ensure it's an array
+          setYearOptions(data); // Ensure it's an array
         } else {
           console.error("Invalid data received:", data);
         }
@@ -20,27 +21,23 @@ function YearList() {
 
   return (
     <div>
-      {options.length > 0 ? (
-        <span>
-          <label htmlFor="yearList">Year:</label>
-          <select
-            id="yearList"
-            value={selected}
-            onChange={(e) => setSelected(e.target.value)}
-          >
-            <option value="">Choose an option</option>
-            {options.map((year) => (
-              <option key={year} value={year}>
-                {year}
-              </option>
-            ))}
-          </select>
-        </span>
-      ) : (
-        <p>No years found.</p>
-      )}
+      <span>
+        <label htmlFor="yearList">Year:</label>
+        <select
+          id="yearList"
+          value={year}
+          onChange={(event) => setYear(event.target.value)}
+        >
+          <option value="">Choose an option</option>
+          {yearOptions.map((year) => (
+            <option key={year} value={year}>
+              {year}
+            </option>
+          ))}
+        </select>
+      </span>
     </div>
   );
-}
+};
 
 export default YearList;
