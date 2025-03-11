@@ -17,10 +17,9 @@ const Season = () => {
     <div>
       {seasons.length > 0 ? (
         seasons.map((season) => (
-          <p>
-            {/* <img alt={team.name} src={team.logo} /> */}
-            {season.league.name} - {season.year}
-          </p>
+          <div key={season.id} className="season">
+            {season.league.name}
+          </div>
         ))
       ) : (
         <p>No seasons found.</p>

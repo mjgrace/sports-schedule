@@ -19,7 +19,10 @@ router.route("/").get((req, res) => {
         )
       )
     )
-    .then((seasons) => res.json(seasons))
+    .then((seasons) => {
+      seasons.sort((a, b) => a.league.name.localeCompare(b.league.name));
+      res.json(seasons);
+    })
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
