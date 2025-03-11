@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useYear } from "../contexts/YearContext";
 import "../styles/Season.css";
 
-const Season = () => {
+const SeasonList = () => {
   const [seasons, setSeasons] = useState([]);
   const { year, setYear } = useYear();
 
@@ -28,4 +28,4 @@ const Season = () => {
   );
 };
 
-export default Season;
+export default SeasonList;

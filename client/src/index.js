@@ -4,16 +4,16 @@ import reportWebVitals from "./reportWebVitals";
 import "./styles/index.css";
 // import App from "./App";
 // import Content from "./Content";
-import Season from "./components/Season";
-import YearList from "./components/YearList";
+import SeasonList from "./components/SeasonList";
+import YearDropdown from "./components/YearDropdown";
 import { YearProvider } from "./contexts/YearContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <YearProvider>
-      <YearList />
-      <Season />
+      <YearDropdown />
+      <SeasonList />
     </YearProvider>
   </React.StrictMode>
 );

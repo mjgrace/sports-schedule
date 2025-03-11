@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/react";
-import Team from "./Team";
+import SeasonList from "./SeasonList";
 
 test("renders content", () => {
-  render(<Team />);
+  render(<SeasonList />);
   const linkElement = screen.getByText(/This is some content/i);
   expect(linkElement).toBeInTheDocument();
 });

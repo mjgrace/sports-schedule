@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useYear } from "../contexts/YearContext";
-import "../styles/YearList.css";
+import "../styles/YearDropdown.css";
 
-const YearList = () => {
+const YearDropdown = () => {
   const [yearOptions, setYearOptions] = useState([]);
   const { year, setYear } = useYear();
 
@@ -22,9 +22,9 @@ const YearList = () => {
   return (
     <div>
       <span>
-        <label htmlFor="yearList">Year:</label>
+        <label htmlFor="yearDropdown">Year:</label>
         <select
-          id="yearList"
+          id="yearDropdown"
           value={year}
           onChange={(event) => setYear(event.target.value)}
         >
@@ -40,4 +40,4 @@ const YearList = () => {
   );
 };
 
-export default YearList;
+export default YearDropdown;
