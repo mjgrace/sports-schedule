@@ -5,15 +5,20 @@ import "./styles/index.css";
 // import App from "./App";
 // import Content from "./Content";
 import SeasonList from "./components/SeasonList";
+import SeasonDropdown from "./components/SeasonDropdown";
 import YearDropdown from "./components/YearDropdown";
 import { YearProvider } from "./contexts/YearContext";
+import { SeasonProvider } from "./contexts/SeasonContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <YearProvider>
-      <YearDropdown />
-      <SeasonList />
+      <SeasonProvider>
+        <YearDropdown />
+        <SeasonDropdown />
+        <SeasonList />
+      </SeasonProvider>
     </YearProvider>
   </React.StrictMode>
 );

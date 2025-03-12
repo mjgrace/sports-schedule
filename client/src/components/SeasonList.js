@@ -7,7 +7,7 @@ const SeasonList = () => {
   const { year, setYear } = useYear();
 
   useEffect(() => {
-    fetch(`http://localhost:5000/seasons?year=${year}&current=true`)
+    fetch(`http://localhost:5000/seasons?year=${year}`)
       .then((response) => response.json())
       .then((data) => setSeasons(data || []))
       .catch((error) => console.error("Error fetching data:", error));
