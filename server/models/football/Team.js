@@ -3,7 +3,14 @@ const Venue = require("./Venue");
 
 const TeamSchema = new mongoose.Schema(
   {
-    id: { type: Number },
+    teamId: { type: Number },
+    league: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "League",
+      required: true,
+    },
+    leagueId: { type: Number, required: true },
+    year: { type: Number, required: true },
     name: { type: String },
     code: { type: String },
     country: { type: String },
@@ -14,6 +21,8 @@ const TeamSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+TeamSchema.index({ teamId: 1, leagueId: 1, year: 1 }, { unique: true });
 
 const Team = mongoose.model("Team", TeamSchema);
 

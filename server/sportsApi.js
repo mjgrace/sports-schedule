@@ -285,7 +285,7 @@ const getTeams = async (req, res) => {
       },
     });
     response.data.response.forEach(async (team) => {
-      await saveTeamPayload(team);
+      await saveTeam(leagueId, season, team);
     });
     return JSON.stringify(response.data.response);
   } catch (error) {
@@ -294,10 +294,26 @@ const getTeams = async (req, res) => {
   }
 };
 
+const saveTeam = async (leagueId, season, teamData) => {
+  try {
+    const league = await League.findOne({ id: leagueId });
+    teamData.league = league._id;
+    teamData.leagueId = leagueId;
+    teamData.year = season;
+    saveTeamPayload(teamData);
+  } catch (error) {
+    console.error("Error saving team:", error);
+  }
+};
+
 const saveTeamPayload = async (teamData) => {
   try {
     const team = new Team({
+      teamId: teamData.team.id,
       id: teamData.team.id,
+      league: teamData.team.league,
+      leagueId: teamData.team.leagueId,
+      year: teamData.team.year,
       name: teamData.team.name,
       code: teamData.team.code,
       country: teamData.team.country,
@@ -306,8 +322,26 @@ const saveTeamPayload = async (teamData) => {
       logo: teamData.team.logo,
     });
     await Team.updateOne(
-      { id: teamData.team.id },
-      { $set: team },
+      {
+        teamId: teamData.team.id,
+        leagueId: teamData.leagueId,
+        year: teamData.year,
+      },
+      {
+        $set: {
+          id: teamData.team.id,
+          teamId: teamData.team.id,
+          league: teamData.league,
+          leagueId: teamData.leagueId,
+          year: teamData.year,
+          name: teamData.team.name,
+          code: teamData.team.code,
+          country: teamData.team.country,
+          founded: teamData.team.founded,
+          national: teamData.team.national,
+          logo: teamData.team.logo,
+        },
+      },
       { upsert: true }
     );
     console.log("Teams saved successfully!");
@@ -322,7 +356,16 @@ const saveTeamPayload = async (teamData) => {
     });
     await Venue.updateOne(
       { id: teamData.venue.id },
-      { $set: venue },
+      {
+        $set: {
+          name: teamData.venue.name,
+          address: teamData.venue.address,
+          city: teamData.venue.city,
+          capacity: teamData.venue.capacity,
+          surface: teamData.venue.surface,
+          image: teamData.venue.image,
+        },
+      },
       { upsert: true }
     );
     return JSON.stringify(teamData);

@@ -7,6 +7,7 @@ import "./styles/index.css";
 import SeasonList from "./components/SeasonList";
 import SeasonDropdown from "./components/SeasonDropdown";
 import YearDropdown from "./components/YearDropdown";
+import TeamList from "./components/TeamList";
 import { YearProvider } from "./contexts/YearContext";
 import { SeasonProvider } from "./contexts/SeasonContext";
 
@@ -17,7 +18,7 @@ root.render(
       <SeasonProvider>
         <YearDropdown />
         <SeasonDropdown />
-        <SeasonList />
+        <TeamList />
       </SeasonProvider>
     </YearProvider>
   </React.StrictMode>

@@ -23,22 +23,18 @@ const SeasonDropdown = () => {
 
   return (
     <div>
-      <span>
-        <label htmlFor="seasonDropdown">Season:</label>
-        <select
-          id="seasonDropdown"
-          value={season}
-          onChange={(event) => setSeason(event.target.value)}
-        >
-          <option value="">Choose an option</option>
-          {seasonOptions.map((season) => (
-            <option key={season.id} value={season.id}>
-              {season.league.name}
-            </option>
-          ))}
-        </select>
-      </span>
-      <div>{season.year}</div>
+      <label htmlFor="seasonDropdown">Season:</label>
+      <select
+        id="seasonDropdown"
+        onChange={(event) => {
+          setSeason(event.target.value);
+        }}
+      >
+        <option value="">Choose an option</option>
+        {seasonOptions.map((season) => (
+          <option value={season.leagueId}>{season.league.name}</option>
+        ))}
+      </select>
     </div>
   );
 };

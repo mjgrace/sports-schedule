@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useYear } from "../contexts/YearContext";
-import "../styles/Season.css";
+import "../styles/SeasonList.css";
 
 const SeasonList = () => {
   const [seasons, setSeasons] = useState([]);
@@ -17,7 +17,7 @@ const SeasonList = () => {
     <div>
       {seasons.length > 0 ? (
         seasons.map((season) => (
-          <div key={season.id} className="season">
+          <div key={season.leagueId} className="season">
             {season.league.name}
           </div>
         ))
