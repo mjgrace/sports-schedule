@@ -9,7 +9,7 @@ const TeamList = () => {
   const { season, setSeason } = useSeason();
 
   useEffect(() => {
-    fetch(`http://localhost:5000/teams?leagueId=${season}&year=${year}`)
+    fetch(`http://localhost:5000/teams?leagueId=${season}&season=${year}`)
       .then((response) => response.json())
       .then((data) => setTeams(data || []))
       .catch((error) => console.error("Error fetching data:", error));
