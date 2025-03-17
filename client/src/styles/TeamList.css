@@ -1,0 +1,10 @@
+div#teamList {
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 20px;
+}
+
+div#teamList div.team {
+    padding: 5px;
+}

@@ -22,8 +22,10 @@ const SeasonDropdown = () => {
   }, [year]);
 
   return (
-    <div>
-      <label htmlFor="seasonDropdown">Season:</label>
+    <span>
+      <label id="seasonDropdownLabel" htmlFor="seasonDropdown">
+        Season
+      </label>
       <select
         id="seasonDropdown"
         onChange={(event) => {
@@ -35,7 +37,7 @@ const SeasonDropdown = () => {
           <option value={season.leagueId}>{season.league.name}</option>
         ))}
       </select>
-    </div>
+    </span>
   );
 };
 

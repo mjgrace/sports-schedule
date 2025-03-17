@@ -16,7 +16,7 @@ const TeamList = () => {
   }, [year, season]);
 
   return (
-    <div>
+    <div id="teamList">
       {teams.length > 0 ? (
         teams.map((team) => (
           <div key={team.id} className="team">

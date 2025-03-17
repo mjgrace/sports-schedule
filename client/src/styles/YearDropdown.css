@@ -1,0 +1,12 @@
+label#yearDropdownLabel {
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff;
+    margin: 20px;
+}
+
+select#yearDropdown {
+    border-radius: 8px; /* Adjust for more or less rounding */
+    border: 1px solid #fff;
+    font-size: 18px;
+}

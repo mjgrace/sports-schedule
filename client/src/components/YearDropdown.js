@@ -27,9 +27,11 @@ const YearDropdown = () => {
   };
 
   return (
-    <div>
+    <span>
       <span>
-        <label htmlFor="yearDropdown">Year:</label>
+        <label id="yearDropdownLabel" htmlFor="yearDropdown">
+          Year
+        </label>
         <select
           id="yearDropdown"
           value={year}
@@ -43,7 +45,7 @@ const YearDropdown = () => {
           ))}
         </select>
       </span>
-    </div>
+    </span>
   );
 };
 
