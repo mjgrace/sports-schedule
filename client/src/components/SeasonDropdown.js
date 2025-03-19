@@ -9,6 +9,9 @@ const SeasonDropdown = () => {
   const { year, setYear } = useYear();
 
   useEffect(() => {
+    setSeasonOptions([]);
+    setSeason("");
+
     fetch(`http://localhost:5000/seasons?year=${year}`)
       .then((response) => response.json())
       .then((data) => {
@@ -34,7 +37,9 @@ const SeasonDropdown = () => {
       >
         <option value="">Choose an option</option>
         {seasonOptions.map((season) => (
-          <option value={season.leagueId}>{season.league.name}</option>
+          <option key={season.leagueId} value={season.leagueId}>
+            {season.league.name}
+          </option>
         ))}
       </select>
     </span>

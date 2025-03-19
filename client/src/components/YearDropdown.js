@@ -23,7 +23,6 @@ const YearDropdown = () => {
 
   const updateYear = (year) => {
     setYear(year);
-    setSeason("");
   };
 
   return (

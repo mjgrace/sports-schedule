@@ -16,9 +16,13 @@ root.render(
   <React.StrictMode>
     <YearProvider>
       <SeasonProvider>
-        <YearDropdown />
-        <SeasonDropdown />
-        <TeamList />
+        <div class="form-flex-container">
+          <YearDropdown />
+          <SeasonDropdown />
+        </div>
+        <div>
+          <TeamList />
+        </div>
       </SeasonProvider>
     </YearProvider>
   </React.StrictMode>

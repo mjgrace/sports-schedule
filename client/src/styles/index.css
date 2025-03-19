@@ -1,8 +1,8 @@
 body {
   background: repeating-linear-gradient(
       to right, 
-      rgba(0, 100, 0, 0.8) 0 100px, 
-      rgb(0, 110, 0, 0.8) 100px 200px
+      rgb(22, 128, 19) 0 100px,  
+      rgb(25, 132, 22) 100px 200px
   );
   margin-left: 50px;
   margin-top: 50px;
@@ -13,7 +13,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.form-flex-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+@media (max-width: 800px) {
+  .form-flex-container {
+    flex-direction: column;
+  }
 }
