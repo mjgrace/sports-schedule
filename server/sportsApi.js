@@ -186,8 +186,8 @@ const saveLeagueRootPayload = async (leagueRootData) => {
       // Step 1: Save the country data
       await saveCountryPayload(leagueData.country);
       // // Step 2: Save the league data
-      await saveLeaguePayload(leagueData.league);
-      const league = await League.findOne({ name: leagueData.league.name });
+      await saveLeaguePayload(leagueData.country.name, leagueData.league);
+      const league = await League.findOne({ id: leagueData.league.id });
       // Step 3: Save the season data
       await saveSeasonPayload(league, leagueData.seasons);
     });
@@ -196,7 +196,7 @@ const saveLeagueRootPayload = async (leagueRootData) => {
   }
 };
 
-const saveLeaguePayload = async (leagueData) => {
+const saveLeaguePayload = async (countryName, leagueData) => {
   // Save the leagues data
   leagueData = leagueData.isArray ? leagueData : [leagueData];
   const leagues = leagueData.map((league) => ({
@@ -204,6 +204,7 @@ const saveLeaguePayload = async (leagueData) => {
     name: league.name,
     type: league.type,
     logo: league.logo,
+    countryName: countryName,
   }));
   const bulkOps = leagueData.map((league) => ({
     updateOne: {
@@ -214,6 +215,7 @@ const saveLeaguePayload = async (leagueData) => {
           name: league.name,
           type: league.type,
           logo: league.logo,
+          countryName: countryName,
         },
       },
       upsert: true,

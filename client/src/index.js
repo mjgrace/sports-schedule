@@ -5,26 +5,31 @@ import "./styles/index.css";
 // import App from "./App";
 // import Content from "./Content";
 import SeasonList from "./components/SeasonList";
-import SeasonDropdown from "./components/SeasonDropdown";
+import CountryDropdown from "./components/CountryDropdown";
 import YearDropdown from "./components/YearDropdown";
+import SeasonDropdown from "./components/SeasonDropdown";
 import TeamList from "./components/TeamList";
+import { CountryProvider } from "./contexts/CountryContext";
 import { YearProvider } from "./contexts/YearContext";
 import { SeasonProvider } from "./contexts/SeasonContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <YearProvider>
-      <SeasonProvider>
-        <div class="form-flex-container">
-          <YearDropdown />
-          <SeasonDropdown />
-        </div>
-        <div>
-          <TeamList />
-        </div>
-      </SeasonProvider>
-    </YearProvider>
+    <CountryProvider>
+      <YearProvider>
+        <SeasonProvider>
+          <div class="form-flex-container">
+            <CountryDropdown />
+            <YearDropdown />
+            <SeasonDropdown />
+          </div>
+          <div>
+            <TeamList />
+          </div>
+        </SeasonProvider>
+      </YearProvider>
+    </CountryProvider>
   </React.StrictMode>
 );
 

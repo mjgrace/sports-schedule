@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useYear } from "../contexts/YearContext";
 import { useSeason } from "../contexts/SeasonContext";
+import { useCountry } from "../contexts/CountryContext";
 import "../styles/SeasonDropdown.css";
 
 const SeasonDropdown = () => {
   const [seasonOptions, setSeasonOptions] = useState([]);
   const { season, setSeason } = useSeason();
   const { year, setYear } = useYear();
+  const { country, setCountry } = useCountry();
 
   useEffect(() => {
     setSeasonOptions([]);
     setSeason("");
 
-    fetch(`http://localhost:5000/seasons?year=${year}`)
+    fetch(`http://localhost:5000/seasons?year=${year}&countryName=${country}`)
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -22,7 +24,7 @@ const SeasonDropdown = () => {
         }
       })
       .catch((error) => console.error("Error fetching data:", error));
-  }, [year]);
+  }, [year, country]);
 
   return (
     <span>

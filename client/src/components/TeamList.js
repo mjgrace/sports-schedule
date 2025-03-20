@@ -1,12 +1,14 @@
 import React, { useEffect, usePrevious, useState } from "react";
 import { useYear } from "../contexts/YearContext";
 import { useSeason } from "../contexts/SeasonContext";
+import { useCountry } from "../contexts/CountryContext";
 import "../styles/TeamList.css";
 
 const TeamList = () => {
   const [teams, setTeams] = useState([]);
   const { year, setYear } = useYear();
   const { season, setSeason } = useSeason();
+  const { country, setCountry } = useCountry();
 
   useEffect(() => {
     if (season != "" && year != "") {
@@ -19,7 +21,7 @@ const TeamList = () => {
 
   useEffect(() => {
     setTeams([]);
-  }, [year]);
+  }, [year, country]);
 
   return (
     <div id="teamList">

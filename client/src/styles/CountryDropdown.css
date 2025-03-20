@@ -1,0 +1,13 @@
+label#countryDropdownLabel {
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff;
+    margin: 10px;
+}
+
+select#countryDropdown {
+    border-radius: 8px; /* Adjust for more or less rounding */
+    border: 1px solid #fff;
+    font-size: 18px;
+    margin: 10px;
+}

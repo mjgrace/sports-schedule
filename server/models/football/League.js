@@ -6,6 +6,7 @@ const LeagueSchema = new mongoose.Schema(
     name: { type: String },
     type: { type: String },
     logo: { type: String },
+    countryName: { type: String },
   },
   { timestamps: true }
 );

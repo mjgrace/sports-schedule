@@ -56,6 +56,9 @@ app.use("/sports_api", sportsApiRoutes);
 const leaguesRouter = require("./routes/leagues");
 app.use("/leagues", leaguesRouter);
 
+const countriesRouter = require("./routes/countries");
+app.use("/countries", countriesRouter);
+
 const seasonsRouter = require("./routes/seasons");
 app.use("/seasons", seasonsRouter);
 

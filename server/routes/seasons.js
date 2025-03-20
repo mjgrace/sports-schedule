@@ -4,11 +4,15 @@ let League = require("../models/football/League.js");
 
 router.route("/").get((req, res) => {
   // Create a query object for filtering
-  let query = {};
-  if (req.query.leagueId) query.leagueId = req.query.leagueId;
-  if (req.query.year) query.year = req.query.year;
-  if (req.query.current) query.current = req.query.current;
-  Season.find(query)
+  let seasonQuery = {};
+  if (req.query.leagueId) seasonQuery.leagueId = req.query.leagueId;
+  if (req.query.year) seasonQuery.year = req.query.year;
+  if (req.query.current) seasonQuery.current = req.query.current;
+
+  let leagueQuery = {};
+  if (req.query.countryName) leagueQuery.countryName = req.query.countryName;
+
+  Season.find(seasonQuery)
     .then((seasons) =>
       Promise.all(
         seasons.map((season) =>
@@ -20,6 +24,15 @@ router.route("/").get((req, res) => {
       )
     )
     .then((seasons) => {
+      seasons = seasons.filter((season) => {
+        console.log("League: " + JSON.stringify(season.league));
+        console.log("Country Name: " + leagueQuery.countryName);
+        return (
+          season.league !== null &&
+          season.league.countryName === leagueQuery.countryName
+        );
+      });
+      console.log(JSON.stringify(seasons));
       seasons.sort((a, b) => a.league.name.localeCompare(b.league.name));
       res.json(seasons);
     })
