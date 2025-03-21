@@ -10,7 +10,7 @@ import { CountryProvider } from "./contexts/CountryContext";
 import { YearProvider } from "./contexts/YearContext";
 import { DateProvider } from "./contexts/DateContext";
 import { SeasonProvider } from "./contexts/SeasonContext";
-import { DateSelector } from "./components/DateSelector";
+import DateSelector from "./components/DateSelector";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
