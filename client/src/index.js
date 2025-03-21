@@ -6,6 +6,7 @@ import CountryDropdown from "./components/CountryDropdown";
 import YearDropdown from "./components/YearDropdown";
 import SeasonDropdown from "./components/SeasonDropdown";
 import TeamList from "./components/TeamList";
+import FixtureList from "./components/FixtureList";
 import { CountryProvider } from "./contexts/CountryContext";
 import { YearProvider } from "./contexts/YearContext";
 import { DateProvider } from "./contexts/DateContext";
@@ -24,6 +25,9 @@ root.render(
               <YearDropdown />
               <DateSelector />
               <SeasonDropdown />
+            </div>
+            <div>
+              <FixtureList />
             </div>
             <div>
               <TeamList />
