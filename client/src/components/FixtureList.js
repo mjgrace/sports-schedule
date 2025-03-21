@@ -6,7 +6,7 @@ import { useCountry } from "../contexts/CountryContext";
 import "../styles/FixtureList.css";
 
 const FixtureList = () => {
-  const [fixtures, setFixtures] = useState("");
+  const [fixtures, setFixtures] = useState([]);
   const { date, setDate } = useDate();
   const { year, setYear } = useYear();
   const { season, setSeason } = useSeason();
@@ -21,7 +21,7 @@ const FixtureList = () => {
       )
         .then((response) => response.json())
         // .then((data) => setFixtures(data || []))
-        .then((data) => setFixtures(data || ""))
+        .then((fixtureData) => setFixtures(JSON.parse(fixtureData) || ""))
         .catch((error) => console.error("Error fetching data:", error));
     }
   }, [date, season]);
@@ -32,16 +32,16 @@ const FixtureList = () => {
 
   return (
     <div id="fixtureList">
-      {fixtures}
-      {/* {fixtures.length > 0 ? (
+      {fixtures.length > 0 ? (
         fixtures.map((fixture) => (
           <div key={fixture.id} className="fixture">
-            {fixture.name}
+            <div>{fixture.teams.home.name}</div>
+            <div>{fixture.teams.away.name}</div>
           </div>
         ))
       ) : (
-        <p>No fixtures found.</p>
-      )} */}
+        <p>No matches found.</p>
+      )}
     </div>
   );
 };

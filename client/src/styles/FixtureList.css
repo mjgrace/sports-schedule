@@ -1,10 +1,10 @@
-/* div#teamList {
+div#fixtureList {
     color: #fff;
     font-size: 18px;
     font-weight: bold;
     margin: 20px;
 }
 
-div#teamList div.team {
+div#fixtureList div.fixture {
     padding: 5px;
-} */
+}
