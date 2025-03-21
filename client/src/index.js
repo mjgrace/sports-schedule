@@ -2,32 +2,34 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import reportWebVitals from "./reportWebVitals";
 import "./styles/index.css";
-// import App from "./App";
-// import Content from "./Content";
-import SeasonList from "./components/SeasonList";
 import CountryDropdown from "./components/CountryDropdown";
 import YearDropdown from "./components/YearDropdown";
 import SeasonDropdown from "./components/SeasonDropdown";
 import TeamList from "./components/TeamList";
 import { CountryProvider } from "./contexts/CountryContext";
 import { YearProvider } from "./contexts/YearContext";
+import { DateProvider } from "./contexts/DateContext";
 import { SeasonProvider } from "./contexts/SeasonContext";
+import { DateSelector } from "./components/DateSelector";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <CountryProvider>
       <YearProvider>
-        <SeasonProvider>
-          <div class="form-flex-container">
-            <CountryDropdown />
-            <YearDropdown />
-            <SeasonDropdown />
-          </div>
-          <div>
-            <TeamList />
-          </div>
-        </SeasonProvider>
+        <DateProvider>
+          <SeasonProvider>
+            <div class="form-flex-container">
+              <CountryDropdown />
+              <YearDropdown />
+              <DateSelector />
+              <SeasonDropdown />
+            </div>
+            <div>
+              <TeamList />
+            </div>
+          </SeasonProvider>
+        </DateProvider>
       </YearProvider>
     </CountryProvider>
   </React.StrictMode>
