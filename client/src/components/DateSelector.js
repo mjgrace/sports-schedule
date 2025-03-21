@@ -21,7 +21,7 @@ const DateSelector = () => {
           id="dateSelector"
           selected={date}
           onChange={(date) => setDate(date)}
-          dateFormat="MM/dd/yyyy"
+          dateFormat="yyyy-MM-dd"
         />
       </span>
     </span>
