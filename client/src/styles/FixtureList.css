@@ -1,4 +1,4 @@
-div#fixtureList {
+p#noFixtureMessage {
     color: #fff;
     font-size: 18px;
     font-weight: bold;
@@ -6,5 +6,39 @@ div#fixtureList {
 }
 
 div#fixtureList div.fixture {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-column-start: 1;
+    grid-column-end: 5;
+    align-items: center;
+    justify-items: center;
     padding: 5px;
+    color: #000;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 20px;
+    border-radius: 8px; /* Adjust for more or less rounding */
+    border: 1px solid #fff;
+    background-color: #fff;
+    font-size: 18px;
 }
+
+div#matchStatus {
+    grid-column: 1 / span 1;
+}
+
+div#headerHalftime {
+    grid-column: 3 / span 1;
+}
+
+div#matchVenue {
+    grid-column: 1 / span 5;
+}
+
+img.logo {
+    width: 25px;
+    height: 25px;}
+
+/* div#fixtureList div.fixture:hover {
+    background-color: #f0f0f0;
+} */

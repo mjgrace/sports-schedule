@@ -29,9 +29,9 @@ root.render(
             <div>
               <FixtureList />
             </div>
-            <div>
+            {/* <div>
               <TeamList />
-            </div>
+            </div> */}
           </SeasonProvider>
         </DateProvider>
       </YearProvider>
