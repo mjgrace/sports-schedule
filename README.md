@@ -6,4 +6,4 @@ It dynamically retrieves soccer/football schedules and retrieves scores and matc
 
 To run the app, clone the repository, run `docker compose up` and then go to [http://localhost](http://localhost).
 
-![Screenshot 2025-06-22 171752](https://github.com/user-attachments/assets/59fa3f78-ecbf-42c8-97e7-7f40ac13b64e)
+![Screenshot 2025-06-22 172748](https://github.com/user-attachments/assets/4e54b8d5-8cd5-4b95-b671-6f71430cda65)
